@@ -6,7 +6,7 @@ import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import AddIcon from "@mui/icons-material/Add";
 import { useState } from "react";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { Field } from "./components/Field";
 
 function App() {
   const [name, setName] = useState("");
@@ -17,7 +17,7 @@ function App() {
   //data replicate- spread operator
   function addData() {
     if (name.length === 0 || email.length === 0) {
-      alert("Please enter a name and an email to proceed!!");
+      alert("Please enter table number and order to proceed!!");
       return;
     }
     setData([
@@ -38,10 +38,11 @@ function App() {
     }
   }, [done, name, email]);
 
-  function removeItem(index) {
-    let arr = data;
-    arr.splice(index, 1);
-    setData([...arr]);
+  function handlePress(event) {
+    console.log(event.key);
+    if (event.key === "Enter") {
+      addData(event);
+    }
   }
 
   return (
@@ -51,19 +52,21 @@ function App() {
       <div className="form">
         <Stack spacing={2} direction="row">
           <TextField
+            onKeyPress={(e) => handlePress(e)}
             required
             value={name}
             onChange={(event) => setName(event.target.value)}
             id="outlined-basic"
-            label="Name"
+            label="Table Number"
             variant="outlined"
           />
           <TextField
+            onKeyPress={(e) => handlePress(e)}
             required
             value={email}
             onChange={(event) => setEmail(event.target.value)}
             id="outlined-basic"
-            label="Email"
+            label="Order"
             variant="outlined"
           />
           <Button color="success" variant="contained" onClick={addData}>
@@ -75,26 +78,20 @@ function App() {
       {/* Data */}
       <div className="data">
         <div className="data-val">
-          <h4>Name</h4>
-          <h4>Email</h4>
+          <h4>Table Number</h4>
+          <h4>Order</h4>
           <h4>Remove</h4>
         </div>
       </div>
       {data.map((element, index) => {
         return (
-          <div key={index} className="data-val">
-            <h4>{element.name}</h4>
-            <h4>{element.email}</h4>
-            <Stack>
-              <Button
-                onClick={() => removeItem(index)}
-                color="error"
-                variant="contained"
-              >
-                <DeleteIcon />
-              </Button>
-            </Stack>
-          </div>
+          <Field
+            index={element.index}
+            name={element.name}
+            email={element.email}
+            data={data}
+            setData={setData}
+          />
         );
       })}
     </div>
